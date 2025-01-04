@@ -1,0 +1,17 @@
+{
+  "name": "vidplay",
+  "version": "1.0.0",
+  "description": "This is a backend for youtube like clone.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "javascript",
+    "express.js",
+    "node.js",
+    "backend"
+  ],
+  "author": "Gourav Singh",
+  "license": "ISC"
+}
