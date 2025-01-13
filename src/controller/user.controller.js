@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiReponse.js";
 import jwt from "jsonwebtoken";
+import { deleteOnCloudinary } from "../utils/deleteOnCloudinary.js";
 
 const generateAccessTokenandRefreshToken = async (userId) => {
   try {
@@ -294,6 +295,12 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     },
     { new: true }
   ).select("-password");
+
+  const result = await deleteOnCloudinary(req.user.avatar);
+
+  if (result === null) {
+    throw new ApiError(404,"Avatar is not found");
+  }
 
   return res
     .status(200)
