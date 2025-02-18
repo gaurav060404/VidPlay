@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
-import ApiError from "../utils/ApiError";
+import ApiError from "../utils/ApiError.js";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -9,16 +9,17 @@ cloudinary.config({
 
 const deleteOnCloudinary = async (previousImagePath) => {
   try {
+    // Consider a more robust method to extract the public id.
     const imagePath = previousImagePath.split("").reverse().join("");
-    const sliced = imagePath.slice(4, imagePath.length);
+    const sliced = imagePath.slice(4);
     const splited = sliced.split("/")[0];
     const resultedPublicId = splited.split("").reverse().join("");
     console.log(resultedPublicId);
-    const result = await cloudinary.uploader.destroy(resultedPublicId,(err,result)=>{
-        if (err) {
-          throw new ApiError(400,"Error occured while deleting the old avatar on cloudinary");
-        }
-    });
+
+    const result = await cloudinary.uploader.destroy(resultedPublicId);
+    if(result.result !== "ok") {
+      throw new ApiError(400, "Error occurred while deleting the old avatar on cloudinary");
+    }
     return result;
   } catch (error) {
     console.log(error);
@@ -26,4 +27,4 @@ const deleteOnCloudinary = async (previousImagePath) => {
   }
 };
 
-export {deleteOnCloudinary};
+export { deleteOnCloudinary };
