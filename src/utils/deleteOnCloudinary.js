@@ -9,7 +9,7 @@ cloudinary.config({
 
 const deleteOnCloudinary = async (previousImagePath) => {
   try {
-    // Consider a more robust method to extract the public id.
+    // Considered a more robust method to extract the public id.
     const imagePath = previousImagePath.split("").reverse().join("");
     const sliced = imagePath.slice(4);
     const splited = sliced.split("/")[0];

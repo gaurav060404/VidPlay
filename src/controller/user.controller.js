@@ -286,6 +286,13 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 
   const userId = req.user?._id;
 
+  const currentUser = await User.findById(userId);
+  if (!currentUser) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const oldAvatar = currentUser.avatar;
+
   const user = await User.findByIdAndUpdate(
     userId,
     {
@@ -296,10 +303,11 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     { new: true }
   ).select("-password");
 
-  const result = await deleteOnCloudinary(req.user.avatar);
-
-  if (result === null) {
-    throw new ApiError(404,"Avatar is not found");
+  if (oldAvatar) {
+    const result = await deleteOnCloudinary(oldAvatar);
+    if (result === null) {
+      throw new ApiError(404, "Old avatar is not found on Cloudinary");
+    }
   }
 
   return res
@@ -322,6 +330,13 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
 
   const userId = req.user?._id;
 
+  const currentUser = await User.findById(userId);
+  if (!currentUser) {
+    throw new ApiError(404, "User not found");
+  }
+
+  const oldCoverImage = currentUser?.coverImage;
+
   const user = await User.findByIdAndUpdate(
     userId,
     {
@@ -333,6 +348,13 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
       new: true,
     }
   ).select("-password");
+
+  if (oldCoverImage) {
+    const result = await deleteOnCloudinary(oldCoverImage);
+    if (result === null) {
+      throw new ApiError(404, "Old avatar is not found on Cloudinary");
+    }
+  }
 
   return res
   .status(200)
